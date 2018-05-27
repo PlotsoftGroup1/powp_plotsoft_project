@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import edu.iis.client.plottermagic.ClientPlotter;
 import edu.iis.client.plottermagic.IPlotter;
+import edu.iis.powp.adapter.InkControlledPlotter;
 import edu.iis.powp.adapter.LineAdapterPlotterDriver;
 import edu.iis.powp.app.Application;
 import edu.iis.powp.command.gui.CommandManagerWindow;
@@ -60,15 +61,16 @@ public class TestPlotterApp {
 	 */
 	private static void setupDrivers(Application application) {
 		IPlotter clientPlotter = new ClientPlotter();
-		application.addDriver("Client Plotter", clientPlotter);
+		application.addDriver("Client Plotter", new InkControlledPlotter(clientPlotter));
 
 		DrawPanelController drawerController = DrawerFeature.getDrawerController();
 		IPlotter plotter = new LineAdapterPlotterDriver(drawerController, LineFactory.getBasicLine(), "basic");
+		plotter = new InkControlledPlotter(plotter);
 		application.addDriver("Line Simulator", plotter);
 		application.getDriverManager().setCurrentPlotter(plotter);
 
 		plotter = new LineAdapterPlotterDriver(drawerController, LineFactory.getSpecialLine(), "special");
-		application.addDriver("Special line Simulator", plotter);
+		application.addDriver("Special line Simulator", new InkControlledPlotter(plotter));
 		application.updateDriverInfo();
 	}
 
